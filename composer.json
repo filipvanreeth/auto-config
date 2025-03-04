@@ -1,0 +1,18 @@
+{
+    "name": "filipvanreeth/auto-config",
+    "description": "Auto Configurator",
+    "license": "GPL",
+    "autoload": {
+        "psr-4": {
+            "FilipVanReeth\\AutoConfig\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Filip Van Reeth",
+            "email": "filip@filipvanreeth.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
