@@ -3,11 +3,12 @@ namespace FilipVanReeth\AutoConfig;
 
 class ResourceRegistrar
 {
+    private Configuration $configuration;
     private array $resources = [];
     private array $directories = [];
-    private array $configuration;
+    private array $constantsConfiguration = [];
 
-    public function __construct(array $configuration)
+    public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
     }
@@ -106,18 +107,32 @@ class ResourceRegistrar
         return $undefinedConstants;
     }
 
-    public function load()
+    private function setupConstantsConfiguration()
     {
         $configuration = $this->configuration;
+        $resources = $this->getResources();
 
-        foreach ($this->resources as $resource) {
-            $resourceloader = new ResourceLoader(
-                $resource,
-                $configuration
-            );
+        $constantsConfiguration = [];
 
-            // var_dump($resourceloader->getConstantsConfiguration());
-            $resourceloader->load();
+        foreach ($resources as $resource) {
+            $constants = $resource->getConstants();
+
+            foreach ($constants as $constant) {
+                if (!array_key_exists($constant, $configuration->getConfig())) {
+                    continue;
+                }
+
+                $constantsConfiguration[$constant] = $configuration->get($constant);
+            }
         }
+
+        $this->constantsConfiguration = $constantsConfiguration;
+    }
+    
+    public function getConstantsConfiguration(): array
+    {
+        $this->setupConstantsConfiguration();
+        
+        return $this->constantsConfiguration;
     }
 }
