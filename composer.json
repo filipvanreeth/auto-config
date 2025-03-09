@@ -5,7 +5,10 @@
     "autoload": {
         "psr-4": {
             "FilipVanReeth\\AutoConfig\\": "src/"
-        }
+        },
+        "files": [
+            "src/AutoConfig.php"
+        ]
     },
     "authors": [
         {
