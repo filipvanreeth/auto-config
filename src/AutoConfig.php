@@ -1,6 +1,9 @@
 <?php
 namespace FilipVanReeth\AutoConfig;
 
+use Exception;
+use FilipVanReeth\AutoConfig\Recipe\Bedrock;
+
 class AutoConfig
 {
     private static Configuration $configuration;
@@ -40,5 +43,20 @@ class AutoConfig
     public static function getConstantsConfiguration(): array
     {
         return self::getResourceRegistrar()->getConstantsConfiguration();
+    }
+    
+    public static function recipe(RecipeInterface $recipe): void
+    {         
+        $directories = $recipe->getDirectories();
+        
+        foreach ($directories as $directory) {
+            self::addDirectory($directory);
+        }
+        
+        $envFile = dirname($recipe->getRootPath(), 2) . '/' . $recipe->getEnvFile();
+        
+        if(file_exists($envFile)) {
+            self::$configuration->applyEnvFileSettings($envFile);
+        }
     }
 }
