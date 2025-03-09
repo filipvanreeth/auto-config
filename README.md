@@ -5,22 +5,33 @@ Type: composer package
 ## Usage (example)
 
 ```
-$configuration = [
-    '{KEY}' => '{value}',
-    ...
-];
+$configuration = new \FilipVanReeth\AutoConfig\Configuration();
 
-// Initialize Resource Registrar
-$resourceRegistrar = new ResourceRegistrar($configuration);
+foreach ($env_files as $env_file) {
+    $configuration->applyEnvFileSettings($root_dir . '/' . $env_file);
+}
 
-// Add directories to scan the files
-$resourceRegistrar->addDirectory(WP_CONTENT_DIR . '/mu-plugins');
-$resourceRegistrar->addDirectory(WP_CONTENT_DIR . '/plugins');
-$resourceRegistrar->addDirectory(WP_CONTENT_DIR . '/themes');
+$wpContentDirectory = $webroot_dir . Config::get('CONTENT_DIR');
 
-// Register a new resource
-$resourceRegistrar->register( new Resource('sitepress-multilingual-cms', 'plugin', ['OTGS_INSTALLER_SITE_KEY_WPML']) );
+\FilipVanReeth\AutoConfig\AutoConfig::init($configuration);
 
-// Load and define the constants
-$resourceRegistrar->load();
+$bedrockRecipe = new \FilipVanReeth\AutoConfig\Recipe\Bedrock($wpContentDirectory);
+\FilipVanReeth\AutoConfig\AutoConfig::recipe($bedrockRecipe);
+
+\FilipVanReeth\AutoConfig\AutoConfig::addResource(
+    'sitepress-multilingual-cms',
+    'plugin',
+    ['OTGS_INSTALLER_SITE_KEY_WPML']
+);
+\FilipVanReeth\AutoConfig\AutoConfig::addResource(
+    'akismet',
+    'plugin',
+    ['AKISMET_KEY']
+);
+
+if ($autoConfigConstants = \FilipVanReeth\AutoConfig\AutoConfig::getConstantsConfiguration()) {
+    foreach ($autoConfigConstants as $constant => $value) {
+        Config::define($constant, $value);
+    }
+}
 ```
