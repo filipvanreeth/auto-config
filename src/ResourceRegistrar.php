@@ -41,7 +41,7 @@ class ResourceRegistrar
         }
 
         foreach ($directories as $directory) {
-            $files = $this->readDirectory($directory);
+            $files = $this->retrieveFilesFromDirectory($directory);
             $defaultResources = $this->getDefaultResources();
 
             foreach ($files as $file) {
@@ -70,7 +70,7 @@ class ResourceRegistrar
         return $this->directories;
     }
 
-    public function readDirectory($directory)
+    public function retrieveFilesFromDirectory($directory)
     {
         $files = scandir($directory);
 
@@ -81,7 +81,7 @@ class ResourceRegistrar
         return $files;
     }
 
-    public function getAllConstants(): array
+    public function getAllConstantsFromResources(): array
     {
         $constants = [];
 
@@ -94,7 +94,7 @@ class ResourceRegistrar
 
     public function getUndefinedConstants(): array
     {
-        $constants = $this->getAllConstants();
+        $constants = $this->getAllConstantsFromResources();
 
         $undefinedConstants = [];
 
